@@ -1070,9 +1070,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 	if (!bpf_jit_enable)
 		return prog;
 
-	if (!prog || !prog->len)
-		return;
-
 	addrs = kmalloc(prog->len * sizeof(*addrs), GFP_KERNEL);
 	if (!addrs)
 		return prog;
