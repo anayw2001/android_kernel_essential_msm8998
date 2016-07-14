@@ -343,6 +343,9 @@ enum bpf_func_id {
 #define BPF_F_FAST_STACK_CMP		(1ULL << 9)
 #define BPF_F_REUSE_STACKID		(1ULL << 10)
 
+/* BPF_FUNC_perf_event_output for sk_buff input context. */
+#define BPF_F_CTXLEN_MASK		(0xfffffULL << 32)
+
 /* user accessible mirror of in-kernel sk_buff.
  * new fields can only be added to the end of this structure
  */

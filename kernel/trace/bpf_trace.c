@@ -274,6 +274,30 @@ static const struct bpf_func_proto bpf_perf_event_output_proto = {
 	.arg5_type	= ARG_CONST_STACK_SIZE,
 };
 
+static DEFINE_PER_CPU(struct pt_regs, bpf_pt_regs);
+
+u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
+		     void *ctx, u64 ctx_size, bpf_ctx_copy_t ctx_copy)
+{
+	struct pt_regs *regs = this_cpu_ptr(&bpf_pt_regs);
+	struct perf_raw_frag frag = {
+		.copy		= ctx_copy,
+		.size		= ctx_size,
+		.data		= ctx,
+	};
+	struct perf_raw_record raw = {
+		.frag = {
+			.next	= ctx_size ? &frag : NULL,
+			.size	= meta_size,
+			.data	= meta,
+		},
+	};
+
+	perf_fetch_caller_regs(regs);
+
+	return __bpf_perf_event_output(regs, map, flags, &raw);
+}
+
 static const struct bpf_func_proto *tracing_func_proto(enum bpf_func_id func_id)
 {
 	switch (func_id) {

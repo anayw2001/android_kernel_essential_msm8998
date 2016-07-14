@@ -867,6 +867,13 @@ const struct bpf_func_proto * __weak bpf_get_trace_printk_proto(void)
 	return NULL;
 }
 
+u64 __weak
+bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
+		 void *ctx, u64 ctx_size, bpf_ctx_copy_t ctx_copy)
+{
+	return -ENOTSUPP;
+}
+
 /* Always built-in helper functions. */
 const struct bpf_func_proto bpf_tail_call_proto = {
 	.func		= NULL,
