@@ -292,6 +292,12 @@ static inline struct bpf_prog *bpf_prog_get_type(u32 ufd,
 static inline void bpf_prog_put(struct bpf_prog *prog)
 {
 }
+
+static inline int bpf_obj_get_user(const char __user *pathname)
+{
+	return -EOPNOTSUPP;
+}
+
 #endif /* CONFIG_BPF_SYSCALL */
 
 /* verifier prototypes for helper functions called from eBPF programs */
