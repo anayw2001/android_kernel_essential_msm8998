@@ -5944,20 +5944,6 @@ struct cgroup_subsys_state *css_from_id(int id, struct cgroup_subsys *ss)
 	return id > 0 ? idr_find(&ss->css_idr, id) : NULL;
 }
 
-#ifdef CONFIG_CGROUP_BPF
-int cgroup_bpf_update(struct cgroup *cgrp, struct bpf_prog *prog,
-                      enum bpf_attach_type type, bool overridable)
-{
-        struct cgroup *parent = cgroup_parent(cgrp);
-        int ret;
-
-        mutex_lock(&cgroup_mutex);
-        ret = __cgroup_bpf_update(cgrp, parent, prog, type, overridable);
-        mutex_unlock(&cgroup_mutex);
-        return ret;
-}
-#endif /* CONFIG_CGROUP_BPF */
-
 /*
  * sock->sk_cgrp_data handling.  For more info, see sock_cgroup_data
  * definition in cgroup-defs.h.
@@ -6222,6 +6208,20 @@ static __init int cgroup_namespaces_init(void)
 	return 0;
 }
 subsys_initcall(cgroup_namespaces_init);
+
+#ifdef CONFIG_CGROUP_BPF
+int cgroup_bpf_update(struct cgroup *cgrp, struct bpf_prog *prog,
+                      enum bpf_attach_type type, bool overridable)
+{
+        struct cgroup *parent = cgroup_parent(cgrp);
+        int ret;
+
+        mutex_lock(&cgroup_mutex);
+        ret = __cgroup_bpf_update(cgrp, parent, prog, type, overridable);
+        mutex_unlock(&cgroup_mutex);
+        return ret;
+}
+#endif /* CONFIG_CGROUP_BPF */
 
 #ifdef CONFIG_CGROUP_DEBUG
 static struct cgroup_subsys_state *
